@@ -2,7 +2,7 @@
   "name": "sprint2-bot-advanced-challenge",
   "version": "1.0.0",
   "description": "Sprint2 advanced challenge",
-  "main": "./app/index.js",
+  "main": "app/index.js",
   "directories": {
     "test": "test"
   },
