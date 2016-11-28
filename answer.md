@@ -1,9 +1,9 @@
 ## デプロイ情報
 #### サービスURL
-{http://example.com}
+{https://codecheck-4017.herokuapp.com}
 
 #### リポジトリURL
-{https://github.com/uuuuu/rrrrr}
+{https://github.com/YukiTETSUKA/codecheck-4017}
 
 #### 使用言語
 - {node / python / ruby / Go / etc.}
