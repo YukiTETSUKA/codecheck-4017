@@ -1,25 +1,42 @@
 var WebSocketServer = require('ws').Server;
 var wss             = new WebSocketServer({port: 3000});
 
+wss.broadcast = function (msg) {
+  wss.clients.forEach(function (client) {
+    client.send(JSON.stringify(msg));
+  });
+};
+
 wss.on('connection', function (ws) {
+
   ws.on('message', function (message) {
     console.log('received: %s', message);
 
     var req = JSON.parse(message);
-    var res = {'success': true};
+    var res = {
+      type   : 'message',
+      text   : req.text,
+      success: true
+    };
 
-    switch (req['text']) {
-      case 'bot ping':
-      case '@bot ping':
-      case 'bot:ping':
-        res['type'] = 'bot';
-        res['text'] = 'pong';
+    /* ボットへのメンションかを判定 */
+    var reg_result = null;
+    if ((reg_result = req.text.match(/^(?:@bot)(?:\s|　)(.*)/)) != null ||
+        (reg_result = req.text.match(/^(?:bot)(?:\s|　)(.*)/ )) != null ||
+        (reg_result = req.text.match(/^(?:bot:)(.*)/         )) != null) {
 
-        ws.send(JSON.stringify(res));
+      res.type = 'bot';
+      switch (reg_result[reg_result.length - 1]) {
+        case 'ping':
+          res.text = 'pong';
+          break;
 
-        break;
-      default:
-        console.log('not ping');
+        default:
+          res.text = 'Oops!:O';
+      }
     }
+
+    wss.broadcast(res);
+
   });
 });
