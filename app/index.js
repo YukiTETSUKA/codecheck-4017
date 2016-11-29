@@ -1,13 +1,13 @@
 var WebSocketServer = require('ws').Server;
-var wss             = new WebSocketServer({port: 3000});
+var wsServer        = new WebSocketServer({port: 3000});
 
-wss.broadcast = function (msg) {
-  wss.clients.forEach(function (client) {
+wsServer.broadcast = function (msg) {
+  wsServer.clients.forEach(function (client) {
     client.send(JSON.stringify(msg));
   });
 };
 
-wss.on('connection', function (ws) {
+wsServer.on('connection', function (ws) {
 
   ws.on('message', function (message) {
     console.log('received: %s', message);
@@ -36,7 +36,7 @@ wss.on('connection', function (ws) {
       }
     }
 
-    wss.broadcast(res);
+    wsServer.broadcast(res);
 
   });
 });
