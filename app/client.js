@@ -8,19 +8,28 @@ $(function () {
     // ws.onopen = function() {
     //   console.log('sent message: %s', $('#m').val());
     // };
-    ws.send($('#m').val());
+
+    var msg   = {
+      text: $('#m').val()
+    };
+
+    ws.send(JSON.stringify(msg));
     $('#m').val('');
+
     return false;
   });
+
   ws.onmessage = function(msg){
     var resp = JSON.parse(msg.data);
     $('#messages')
       .append($('<li>')
       .append($('<span class="message">').text(resp.text)));
   };
+
   ws.onerror = function(err){
     console.log("err", err);
   };
+
   ws.onclose = function close() {
     console.log('disconnected');
   };
