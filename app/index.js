@@ -1,15 +1,15 @@
 var WebSocketServer = require('ws').Server;
 var wsServer        = new WebSocketServer({port: 3000});
 
-wsServer.broadcast = (msg) => {
-  wsServer.clients.forEach((client) => {
+wsServer.broadcast = msg => {
+  wsServer.clients.forEach(client => {
     client.send(JSON.stringify(msg));
   });
 };
 
-wsServer.on('connection', (ws) => {
+wsServer.on('connection', ws => {
 
-  ws.on('message', (message) => {
+  ws.on('message', message => {
     console.log('received: %s', message);
 
     var req = JSON.parse(message);
