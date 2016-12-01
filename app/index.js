@@ -42,3 +42,5 @@ wsServer.on('connection', ws => {
     wsServer.broadcast(res);
   });
 });
+
+console.log('Express server listening on port: %d', server.address().port);
