@@ -34,7 +34,7 @@ wsServer.on('connection', ws => {
       if (req.text.indexOf('bot:') >= 0) { // bot: xxx の場合だけ処理を変更する
         var tmp        = req.text.split(/:/, 2);
         var cmd_params = tmp.pop();
-        reg_result     = tmp.concat(cmd_params.split(/(\s|　)+/).filter(e => {return !e.match(/\s|　/)}));
+        reg_result     = tmp.concat(cmd_params.split(/(\s|　)+/).filter(e => {return e && !e.match(/\s|　/);}));
       } else {
         reg_result = req.text.split(/(\s|　)+/    ).filter(e => {return !e.match(/\s|　/)});
       }
