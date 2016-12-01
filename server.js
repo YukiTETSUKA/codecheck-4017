@@ -25,9 +25,9 @@ wsServer.on('connection', ws => {
 
     /* ボットへのメンションかを判定 */
     var reg_result = null;
-    if ((reg_result = req.text.match(/^(?:@bot)(?:\s|　)(.*)/)) != null ||
-        (reg_result = req.text.match(/^(?:bot)(?:\s|　)(.*)/ )) != null ||
-        (reg_result = req.text.match(/^(?:bot:)(.*)/         )) != null) {
+    if ((reg_result = req.text.match(/^(?:@bot)(?:\s|　)+(.*)/)) != null || /* @bot xxx */
+        (reg_result = req.text.match(/^(?:bot)(?:\s|　)+(.*)/ )) != null || /* bot  xxx */
+        (reg_result = req.text.match(/^(?:bot:)(?:\s|　)*(.*)/)) != null) { /* bot: xxx */
 
       res.type = 'bot';
       switch (reg_result[reg_result.length - 1]) {
