@@ -25,18 +25,26 @@ wsServer.on('connection', ws => {
     };
 
     /* ボットへのメンションかを判定 */
-    var reg_result = null;
-    if ((reg_result = req.text.match(/^(?:@bot)(?:\s|　)+(.*)/)) != null || /* @bot xxx */
-        (reg_result = req.text.match(/^(?:bot)(?:\s|　)+(.*)/ )) != null || /* bot  xxx */
-        (reg_result = req.text.match(/^(?:bot:)(?:\s|　)*(.*)/)) != null) { /* bot: xxx */
+    if (req.text.match(/^(?:@bot)(?:\s|　)+(.*)/) != null || /* @bot xxx */
+        req.text.match(/^(?:bot)(?:\s|　)+(.*)/ ) != null || /* bot  xxx */
+        req.text.match(/^(?:bot:)(?:\s|　)*(.*)/) != null) { /* bot: xxx */
 
+      // mention, command, param1, param2 ... を分割
+      var reg_result = null;
+      if (req.text.indexOf('bot:') >= 0) { // bot: xxx の場合だけ処理を変更する
+        var tmp        = req.text.split(/:/, 2);
+        var cmd_params = tmp.pop();
+        reg_result     = tmp.concat(cmd_params.split(/(\s|　)+/).filter(e => {return !e.match(/\s|　/)}));
+      } else {
+        reg_result = req.text.split(/(\s|　)+/    ).filter(e => {return !e.match(/\s|　/)});
+      }
       reg_result.shift();
 
       res.type = 'bot';
 
-      var tmp     = reg_result.unshift().match(/^\S+ (.*)/);
-      var command = tmp.unshift();
-      var params  = tmp.length == 0 ? null : tmp.unshift();
+      var command = reg_result.shift();
+      var params  = reg_result;
+
       switch (command) {
         case 'ping':
           res.text = 'pong';
@@ -44,11 +52,11 @@ wsServer.on('connection', ws => {
           break;
 
         case 'event': /* 今月に開かれるイベントを紹介する */
-          var splited_params = params.split(/(\s|　)+/);
-          getEvents(splited_params, res);
+          getEvents(params, res);
+          break;
 
         default:
-          res.text = 'Oops!:O';
+          res.text = 'Oops!:O command not found XO';
           wsServer.broadcast(res);
       }
     } else {
@@ -72,22 +80,30 @@ const prefectures = [
   '香川県', '愛媛県'  , '高知県', '福岡県', '佐賀県', '長崎県'  , '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
 ];
 const http     = require('http');
-const endpoint = 'https://eventon.jp/api/events.json';
+const endpoint = 'http://eventon.jp/api/events.json';
 function getEvents(params, res) {
   var prefecture_id = prefectures.indexOf(params.shift() || '東京都') + 1;
   var keyword       = params.length == 0 ? '' : params.join();
   var ymd_between   = `${moment().add(1, 'days').format('YYYYMMDD')},${moment().add(31, 'days').format('YYYYMMDD')}`; // 開催年月日範囲
   const url = `${endpoint}?prefecture_id=${prefecture_id}&keyword=${keyword}&ymd_between=${ymd_between}&order=started_at_asc`;
 
-  if (pref_id == 0) { // 都道府県名がhitしなかった場合，空配列を返却
-    res.text = 'Oops! :O Prefecture not found XO';
+  if (prefecture_id == 0) { // 都道府県名がhitしなかった場合，空配列を返却
+    res.text = "Oops! :O Prefecture not found XO\nUsage: bot event Prefecture_name (keyword1 keyword2 ...)";
     wsServer.broadcast(res);
+    return;
   }
 
-  http.get(url, eventon_res => {
-    eventon_res.setEncoding('utf8');
-    res.text = JSON.stringify(JSON.parse(eventon_res).events);
+  http.get(url, incom_msg => {
+    var body = '';
+    incom_msg.setEncoding('utf8');
 
-    wsServer.broadcast(res);
+    incom_msg.on('data', chunk => { body += chunk; });
+
+    incom_msg.on('end', eventon_res => {
+      res.text = JSON.stringify(JSON.parse(body).events);
+      wsServer.broadcast(res);
+    });
   });
+
+  return;
 }
