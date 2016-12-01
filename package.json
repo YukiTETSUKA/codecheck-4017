@@ -2,13 +2,13 @@
   "name": "sprint2-bot-advanced-challenge",
   "version": "1.0.0",
   "description": "Sprint2 advanced challenge",
-  "main": "app/index.js",
+  "main": "server.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "mocha test --recursive",
-    "start": "node app/index.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

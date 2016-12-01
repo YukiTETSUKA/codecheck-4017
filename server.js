@@ -1,6 +1,7 @@
 const express  = require('express');
 const port     = 3000;
 const server   = express()
+  .use(express.static('app'))
   .use((req, res) => res.send('Hello :D'))
   .listen(process.env.PORT || port);
 var wsServer   = new require('ws').Server({server});
