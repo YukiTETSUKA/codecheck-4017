@@ -21,7 +21,8 @@ wsServer.on('connection', ws => {
     var res = {
       type   : 'message',
       text   : req.text,
-      success: true
+      success: true,
+      events : null
     };
 
     /* ボットへのメンションかを判定 */
@@ -100,7 +101,7 @@ function getEvents(params, res) {
     incom_msg.on('data', chunk => { body += chunk; });
 
     incom_msg.on('end', eventon_res => {
-      res.text = JSON.stringify(JSON.parse(body).events);
+      res.events = JSON.parse(body).events;
       wsServer.broadcast(res);
     });
   });
