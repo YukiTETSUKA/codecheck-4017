@@ -1,7 +1,9 @@
-var server = require('http').createServer();
-var wsServer = new require('ws').Server({server: server});
-var app      = require('express')();
-const port   = 3000;
+const express  = require('express');
+const port     = 3000;
+const server   = express()
+  .use((req, res) => res.send('Hello :D'))
+  .listen(process.env.PORT || port);
+var wsServer   = new require('ws').Server({server});
 
 wsServer.broadcast = msg => {
   wsServer.clients.forEach(client => {
@@ -9,12 +11,7 @@ wsServer.broadcast = msg => {
   });
 };
 
-app.use((req, res) => {
-  res.send('Hello World');
-});
-
 wsServer.on('connection', ws => {
-
   ws.on('message', message => {
     console.log('received: %s', message);
 
@@ -43,9 +40,5 @@ wsServer.on('connection', ws => {
     }
 
     wsServer.broadcast(res);
-
   });
 });
-
-server.on('request', app);
-server.listen(process.env.PORT || port);
