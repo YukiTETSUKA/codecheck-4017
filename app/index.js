@@ -1,11 +1,17 @@
-var WebSocketServer = require('ws').Server;
-var wsServer        = new WebSocketServer({port: 3000});
+var server = require('http').createServer();
+var wsServer = new require('ws').Server({server: server});
+var app      = require('express')();
+const port   = 3000;
 
 wsServer.broadcast = msg => {
   wsServer.clients.forEach(client => {
     client.send(JSON.stringify(msg));
   });
 };
+
+app.use((req, res) => {
+  res.send('Hello World');
+});
 
 wsServer.on('connection', ws => {
 
@@ -41,9 +47,5 @@ wsServer.on('connection', ws => {
   });
 });
 
-var http = require('http');
-http.createServer((req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.write('Hello, World');
-  res.end();
-}).listen(process.env.PORT || 8080);
+server.on('request', app);
+server.listen(process.env.PORT || port);
