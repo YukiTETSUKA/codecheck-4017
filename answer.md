@@ -6,21 +6,24 @@
 {https://github.com/YukiTETSUKA/codecheck-4017}
 
 #### 使用言語
-- {node / python / ruby / Go / etc.}
+- {node}
 
 #### 主なライブラリ
-- {ws / websockets / em-websocket / websocket / etc.}
+- {ws / express / moment}
 
 ####  ホスティングサービス
-- {AWS / DigitalOcean / Sakura / Heroku / etc.}
+- {Heroku}
 
 ## 独自コマンドの実装
 #### 追加したコマンド
 ```
 bot {command} [parameters...]
+
+bot event 都道府県名 キーワード1 キーワード2 ...
 ```
 
 #### コマンドの説明
+`http://eventon.jp/api/events.json` から，与えられた都道府県の直近1ヶ月のイベントを取得し，一覧表示する．(キーワードで絞り込み可)
 
 ## 創意工夫 & 作り込み
 #### 作り込んだコマンド / 機能
