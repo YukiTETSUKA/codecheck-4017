@@ -53,11 +53,11 @@ wsServer.on('connection', ws => {
           break;
 
         case 'event': /* 今月に開かれるイベントを紹介する */
-          getEvents(params, res);
+          get_events(params, res);
           break;
 
         default:
-          res.text = 'Oops!:O command not found XO';
+          res.text += '\nOops!:O command not found XO';
           wsServer.broadcast(res);
       }
     } else {
@@ -82,14 +82,16 @@ const prefectures = [
 ];
 const http     = require('http');
 const endpoint = 'http://eventon.jp/api/events.json';
-function getEvents(params, res) {
-  var prefecture_id = prefectures.indexOf(params.shift() || '東京都') + 1;
+function get_events(params, res) {
+  var prefecture    = params.shift() || '東京都'; // デフォルトは東京都
+  var prefecture_id = prefectures.indexOf(prefecture) + 1;
   var keyword       = params.length == 0 ? '' : params.join();
   var ymd_between   = `${moment().add(1, 'days').format('YYYYMMDD')},${moment().add(31, 'days').format('YYYYMMDD')}`; // 開催年月日範囲
+
   const url = `${endpoint}?prefecture_id=${prefecture_id}&keyword=${keyword}&ymd_between=${ymd_between}&order=started_at_asc`;
 
-  if (prefecture_id == 0) { // 都道府県名がhitしなかった場合，空配列を返却
-    res.text = "Oops! :O Prefecture not found XO\nUsage: bot event Prefecture_name (keyword1 keyword2 ...)";
+  if (prefecture_id == 0) { // 都道府県名がhitしなかった場合
+    res.text += "\nOops! :O Prefecture not found XO\nUsage: bot event Prefecture_name (keyword1 keyword2 ...)";
     wsServer.broadcast(res);
     return;
   }
@@ -102,6 +104,9 @@ function getEvents(params, res) {
 
     incom_msg.on('end', eventon_res => {
       res.events = JSON.parse(body).events;
+      if (res.events.length == 0) { // イベント情報が1つもない
+        res.text += `${prefecture}の直近1ヶ月で開催されるイベントは見つかりませんでした...XO`;
+      }
       wsServer.broadcast(res);
     });
   });
