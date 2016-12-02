@@ -1,7 +1,6 @@
 'use strict';
 
-// var ws = new WebSocket('wss://codecheck-4017.herokuapp.com:443/');
-var ws = new WebSocket('ws://localhost:5000/');
+var ws = new WebSocket('wss://codecheck-4017.herokuapp.com:443/');
 
 $(function () {
   $('form').submit(function(){
