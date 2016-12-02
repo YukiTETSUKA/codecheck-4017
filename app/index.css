@@ -8,3 +8,6 @@ body { font: 16px Helvetica, Arial; height: 100%; }
 .ul.messages { list-style-type: none; margin: 0; padding: 0; }
 .ul.messages li { padding: 5px 10px; }
 .message { padding-left: 2%; display: inline-block; }
+
+.multiple-items { width: 90%; margin: 0 auto; }
+a img { width : 100% !important; height: auto !important; }
