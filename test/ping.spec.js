@@ -29,10 +29,10 @@ describe("bot ping", () => {
           assert.equal(msg.type, "message or bot", "expected 'message' or 'bot'");
           break;
       }
-      if (++cnt >= 2) {
+      // if (++cnt >= 2) {
         user.close();
         done();
-      }
+      // }
     });
   });
 
@@ -56,10 +56,10 @@ describe("bot ping", () => {
           assert.fail(msg.type, "message or bot", "'message' or 'bot' expected");
           break;
       }
-      if (++cnt >= 2) {
+      // if (++cnt >= 2) {
         user.close();
         done();
-      }
+      // }
     });
   });
 
@@ -84,10 +84,10 @@ describe("bot ping", () => {
           assert.fail(msg.type, "message or bot", "'message' or 'bot' expected");
           break;
       }
-      if (++cnt >= 2) {
+      // if (++cnt >= 2) {
         user.close();
         done();
-      }
+      // }
     });
   });
 
